@@ -4,19 +4,27 @@ import cv2
 from time import time
 from waveform_former import f
 
-beginning = time()
 
-while(True):
-    cv2.namedWindow('frame')    
+def transmit(f):
+    '''
+    Input: function of time, F: R+ -> [0, 1]
+    Opens window and sends F in bw
+    '''
+    beginning = time()
 
-    t = time() - beginning
-    img = np.full((512, 512), f(t))
+    while(True):
+        cv2.namedWindow('frame')
 
-    # Display the frame
-    cv2.imshow('frame', img)
-    
-    # Break if ESC is pressed
-    if cv2.waitKey(1) & 0xFF == 27:
-        break
+        t = time() - beginning
+        img = np.full((512, 512), f(t))
 
-cv2.destroyAllWindows()
+        # Display the frame
+        cv2.imshow('frame', img)
+
+        # Break if ESC is pressed
+        if cv2.waitKey(1) & 0xFF == 27:
+            break
+
+    cv2.destroyAllWindows()
+
+transmit(f)
