@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from config import INPUT_FILE
 from config import CODING_METHOD
 
