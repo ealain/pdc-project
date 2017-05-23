@@ -5,7 +5,8 @@ import numpy as np
 from config import WAVEFORM_TYPE
 from config import SAMPLING_FREQUENCY
 
-from encoder import encode
+from t_encoder import encode
+
 LIST_OF_BITS = encode()
 print(LIST_OF_BITS)
 ###   ###   ###   ###   ###   ###   ###
