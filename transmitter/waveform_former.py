@@ -7,7 +7,7 @@ from config import SAMPLING_FREQUENCY
 
 from encoder import encode
 LIST_OF_BITS = encode()
-
+print(LIST_OF_BITS)
 ###   ###   ###   ###   ###   ###   ###
 
 def sin_to_01(t):
@@ -24,6 +24,21 @@ def bits(t, period = 0.5):
         i += 1
     return float(LIST_OF_BITS[i])
 
+
+def rootRaisedCosine(t):
+    beta = 0.5
+    bit_period = 1.0/SAMPLING_FREQUENCY*3.0/2.0
+
+    if (t== bit_period/(4*beta)):
+        return (beta/(np.pi*np.sqrt(2*bit_period)) * \
+                ((np.pi + 2)*np.sin(np.pi/(4*beta)) + (np.pi - 2)*np.cos(np.pi/(4*beta))))
+    else:
+        return (4 * beta / np.pi / np.sqrt(bit_period) * \
+            (np.cos((1 + beta) * np.pi * t / bit_period) + \
+             (1 - beta) * np.pi / (4 * beta) * np.sinc((1-beta)*t/bit_period)) / \
+                (1 - (4*beta*t/bit_period)**2))
+
+
 def rrc(t, beta = 0.5, truncation = 10):
     '''
     Input: T, evaluation point (seconds)
@@ -37,6 +52,8 @@ def rrc(t, beta = 0.5, truncation = 10):
     nb_bits = len(LIST_OF_BITS)
     # To be returned (sum of contributions)
     s = 0.0
+    # Max value of rrc
+    m = 4*beta/np.pi/np.sqrt(bit_period) + (1-beta)/np.sqrt(bit_period) + sum(abs(2*rootRaisedCosine(i*bit_period)) for i in range(1, truncation))
 
     if(t < - truncation * bit_period  or t >= (nb_bits + truncation) * bit_period):
         # T out of support
@@ -55,12 +72,12 @@ def rrc(t, beta = 0.5, truncation = 10):
             tt = t - int(tt)*bit_period if int(tt) <= tt else t - (int(tt)-1)*bit_period
             if(t == bit_period * (1 / 4 / beta + (i - truncation))):
                 # L'Hospital's rule because of potential discontinuity
-                s += relevant_bits[i] * beta / np.pi / np.sqrt(2*bit_period) * \
+                s += relevant_bits[i] * beta / np.pi / np.sqrt(2*bit_period) * 1 / m * \
                      ((np.pi + 2) * np.sin(np.pi/4/beta) + \
                       (np.pi - 2) * np.cos(np.pi/4/beta))
             else:
                 # General case formula
-                s += relevant_bits[i] * 4*beta/np.pi/np.sqrt(bit_period) * \
+                s += relevant_bits[i] * 4*beta/np.pi/np.sqrt(bit_period) * 1 / m * \
                      (np.cos((1 + beta) * np.pi * ((tt / bit_period - (i-truncation)))) + \
                       (1 - beta) * np.pi / 4 / beta * \
                       np.sinc((1 - beta) * (tt / bit_period - (i-truncation))))/ \
