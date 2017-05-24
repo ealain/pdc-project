@@ -19,7 +19,7 @@ def transmit(f):
         cv2.namedWindow('frame')
 
         t = time() - beginning
-        img = np.full((512, 512), f(t))
+        img = np.full((512, 512), (f(t)+1)/2.0)
 
         # Display the frame
         cv2.imshow('frame', img)

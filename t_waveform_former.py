@@ -8,22 +8,45 @@ from config import SAMPLING_FREQUENCY
 from t_encoder import encode
 
 LIST_OF_BITS = encode()
-print(LIST_OF_BITS)
+print('Data to be transmitted: ' + str(LIST_OF_BITS))
+
 ###   ###   ###   ###   ###   ###   ###
 
-def sin_to_01(t):
-    return (np.sin(t) + 1) / 2
+def sin(t):
+    '''
+    Input: T, evaluation point (seconds)
+    Output: value of sine-pulse at time T
+    '''
+    # Delay between two bits
+    bit_period = 2.0/SAMPLING_FREQUENCY
+    # Total amount of bits to transmit
+    nb_bits = len(LIST_OF_BITS)
 
-def bits(t, period = 0.5):
+    tt = t/bit_period
+    i = int(tt) if t > 0 else int(tt)-1
+    tt = t - int(tt)*bit_period if int(tt) <= tt else t - (int(tt)-1)*bit_period
+
+    if(i < 0 or i > nb_bits):
+        return 0.0
+    return (-1 if LIST_OF_BITS[i] == '0' else 1) * np.sin(np.pi*tt/bit_period)
+
+
+def step(t):
     '''
     Looks for bits produced by encoder and transmits them
-    for given PERIOD in seconds
     '''
-    i_max = len(LIST_OF_BITS) - 1
-    i = 0
-    while(t - i*period > 0 and i < i_max):
-        i += 1
-    return float(LIST_OF_BITS[i])
+    # Delay between two bits
+    bit_period = 2.0/SAMPLING_FREQUENCY
+    # Total amount of bits to transmit
+    nb_bits = len(LIST_OF_BITS)
+
+    tt = t/bit_period
+    i = int(tt) if t > 0 else int(tt)-1
+    tt = t - int(tt)*bit_period if int(tt) <= tt else t - (int(tt)-1)*bit_period
+
+    if(i < 0 or i > nb_bits):
+        return 0.0
+    return -1 if LIST_OF_BITS[i] == '0' else 1
 
 
 def rootRaisedCosine(t):
@@ -89,8 +112,8 @@ def rrc(t, beta = 0.5, truncation = 10):
 ###   ###   ###   ###   ###   ###   ###
 
 if(WAVEFORM_TYPE == 'sinus'):
-    f = sin_to_01
+    f = sin
 elif(WAVEFORM_TYPE == 'rectangle'):
-    f = bits
+    f = step
 elif(WAVEFORM_TYPE == 'rrc'):
     f = rrc
