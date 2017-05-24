@@ -3,6 +3,7 @@
 
 from t_waveform_former import rrc
 from r_tuple_former import formTuples, rootRaisedCosine
+from r_decoder import decode
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -26,3 +27,4 @@ plt.plot(np.arange(-10/20.0, 10/20.0, 1.0/30.0), rrcSignal)
 plt.show()
 
 print(formTuples(receivedSignal))
+print(decode(formTuples(receivedSignal)))
