@@ -39,7 +39,7 @@ def main():
         mask = detect_color(frame)
         cv2.imshow('frame', frame)
         cv2.imshow('mask', mask)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == 27:
             break
 
     frame_screen = detect_screen(frame, mask)
