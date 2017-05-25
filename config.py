@@ -14,5 +14,6 @@ SAMPLING_FREQUENCY = 30.0
 
 # Lower and upper bounds of color detection for screen detection
 # These colors are in the BGR format
-SCREEN_DETECTION_LOWER = np.array([100, 0, 0], dtype="uint8")
-SCREEN_DETECTION_UPPER = np.array([255, 100, 100], dtype="uint8")
+# It is configured here to detect green
+SCREEN_DETECTION_LOWER = np.array([0, 120, 0], dtype="uint8")
+SCREEN_DETECTION_UPPER = np.array([120, 255, 120], dtype="uint8")
