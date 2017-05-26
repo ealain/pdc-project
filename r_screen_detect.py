@@ -13,22 +13,6 @@ def detect_color(frame):
     return cv2.inRange(frame, SCREEN_DETECTION_LOWER, SCREEN_DETECTION_UPPER)
 
 
-def get_screen_gray_level(frame_screen):
-    """Return the average gray level of the non-black parts of `frame_screen`
-    """
-    avg = 0.0
-    c = 0
-    gray_frame_screen = cv2.cvtColor(frame_screen, cv2.COLOR_BGR2GRAY)
-    # Iteration over the lines
-    for x in gray_frame_screen:
-        # Iteration over the pixels
-        for y in x:
-            if y > 0:
-                avg += y
-                c += 1
-    return float(avg) / float(c)
-
-
 def screen_position():
     '''
     Returns position of rectangle x,y,w,h if:
@@ -97,7 +81,7 @@ def main():
         if cv2.waitKey(1) & 0xFF == 27:
             break
 
-    print(get_screen_gray_level(frame_screen))
+    print(get_screen_gray_level(masked_frame))
     cap.release()
     cv2.destroyAllWindows()
 
