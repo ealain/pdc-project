@@ -4,6 +4,8 @@
 from t_waveform_former import rrc
 from r_tuple_former import formTuples, rootRaisedCosine
 from r_decoder import decode
+from r_tuple_former import low_pass_filter
+
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -28,3 +30,12 @@ plt.show()
 
 print(formTuples(receivedSignal))
 print(decode(formTuples(receivedSignal)))
+
+if(True):
+    x = [(np.cos(2*np.pi*30*a) + np.cos(2*np.pi*5*a)) for a in np.arange(0, 1, 1/100.0)]
+    y = low_pass_filter(x, 5, 20, 100)
+    plt.plot(np.arange(0, 1, 1/100.0), y)
+    plt.plot(np.arange(0, 1, 1/100.0), x)
+    plt.show()
+
+

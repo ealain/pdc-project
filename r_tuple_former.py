@@ -2,6 +2,7 @@
 
 import numpy as np
 from config import SAMPLING_FREQUENCY
+from scipy import signal
 
 def resample(signal):
     '''
@@ -58,4 +59,12 @@ def formTuples(signal):
         i = i+1
 
     return tupleList
+
+
+def low_pass_filter(x, order, cutOffFrequency, samplingFrequency):
+    nyq = samplingFrequency*0.5
+    cut = cutOffFrequency/nyq
+    b, a = signal.butter(order, cut, btype='low')
+    y = signal.filtfilt(b, a, x)
+    return y
 
