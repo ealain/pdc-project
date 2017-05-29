@@ -12,8 +12,10 @@ def receive():
     1. Locate screen
     2. Follow the variations of intensity in the screen
     '''
-    #x,y,w,h = screen_position()
-    x,y,w,h = (200, 200, 40, 40)
+    x,y,w,h = screen_position()
+    if((x,y,w,h) == (-1,-1,-1,-1)):
+        print("Unable to detect screen")
+        return
     intensity = []
     cap = cv2.VideoCapture(0)
     while(True):

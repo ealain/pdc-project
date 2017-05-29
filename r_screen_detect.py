@@ -44,7 +44,7 @@ def screen_position():
             else:
                 i += 1
     cap.release()
-    return None
+    return -1,-1,-1,-1
 
 
 def main():
