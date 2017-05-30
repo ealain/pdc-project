@@ -1,4 +1,7 @@
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
+
+from config import EXCHANGE_FILE_PATH
 
 
 def ascii_to_char(l):
@@ -21,7 +24,7 @@ def ascii_to_char(l):
     return charList
 
 
-def decode(l):
+def sequence_to_char(l):
     '''
     :param l: list of "tuples" from the tuple former
     :return: corresponding text
@@ -34,3 +37,48 @@ def decode(l):
             bits.append(0)
 
     return ascii_to_char(bits)
+
+
+def decode():
+    f = open(EXCHANGE_FILE_PATH)
+    value_prec = -1
+
+    # Calibration
+    calib = True
+    calib_min = False
+    calib_max = False
+    calib_min_value = float("inf")
+    calib_max_value = 0.0
+
+    try:
+        while True:
+            line = f.readline()
+            if len(line) > 0:
+                value = float(line.strip())
+                if calib:
+                    if value_prec != -1:
+                        if calib_min:
+                            if value < calib_min_value:
+                                calib_min_value = value
+                            elif value > value_prec * 110.0 / 100.0:
+                                calib_min = False
+                                calib_max = True
+                        elif calib_max:
+                            if value > calib_max_value:
+                                calib_max_value = value
+                            elif value < value_prec * 97.0 / 100.0:
+                                break
+                        elif value < value_prec * 90.0 / 100.0:
+                            calib_min = True
+                value_prec = value
+    except KeyboardInterrupt:
+        pass
+
+    print calib_min_value
+    print calib_max_value
+
+    f.close()
+
+
+if __name__ == "__main__":
+    decode()
