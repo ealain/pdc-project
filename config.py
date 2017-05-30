@@ -3,6 +3,7 @@
 import numpy as np
 
 INPUT_FILE = 'alphabet.txt'
+EXCHANGE_FILE_PATH = './log'
 
 # Available choices are 'ascii'
 CODING_METHOD = 'ascii'
