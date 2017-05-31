@@ -17,21 +17,21 @@ def transmit(f):
 
     cv2.namedWindow('frame')
 
-    while(time() < beginning + 3.0):
+    while(time() < beginning + 5.0):
         img = np.full((512, 512, 3), np.array([0, 255, 0]), dtype="uint8")
         cv2.imshow('frame', img)
         cv2.waitKey(1)
 
     # Low light flash for calibration
     time_mark = time()
-    while(time() < time_mark + 0.1):
+    while(time() < time_mark + 2):
         img = np.full((512, 512, 3), np.array([0, 0, 0]), dtype="uint8")
         cv2.imshow('frame', img)
         cv2.waitKey(1)
 
     # Full light flash for calibration
     time_mark = time()
-    while(time() < time_mark + 0.1):
+    while(time() < time_mark + 2):
         img = np.full((512, 512, 3), np.array([255, 255, 255]), dtype="uint8")
         cv2.imshow('frame', img)
         cv2.waitKey(1)

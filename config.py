@@ -11,6 +11,7 @@ CODING_METHOD = 'ascii'
 # Available choices are 'sinus', 'rectangle', 'rrc'
 WAVEFORM_TYPE = 'rrc'
 
+BIT_FREQUENCY = 3.0
 SAMPLING_FREQUENCY = 30.0
 
 # Lower and upper bounds of color detection for screen detection

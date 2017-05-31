@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from config import SAMPLING_FREQUENCY
+from config import SAMPLING_FREQUENCY, BIT_FREQUENCY
 from scipy import signal
 
 def resample(signal):
@@ -18,7 +18,7 @@ def resample(signal):
 
 def rootRaisedCosine(t):
     beta = 0.5
-    bit_period = 1.0/SAMPLING_FREQUENCY*(1+beta)
+    bit_period = 1.0/BIT_FREQUENCY
 
     if (t== bit_period/(4*beta)):
         return (beta/(np.pi*np.sqrt(2*bit_period)) * \
@@ -41,7 +41,7 @@ def formTuples(signal):
 
     beta = 0.5
     truncation = 10
-    bit_period = 1.0/SAMPLING_FREQUENCY*(1+beta)
+    bit_period = 1.0/BIT_FREQUENCY
     t = np.arange(-truncation*bit_period, truncation*bit_period, 0.5/SAMPLING_FREQUENCY)
     m = 4*beta/np.pi/np.sqrt(bit_period) + (1-beta)/np.sqrt(bit_period) + sum(abs(2*rootRaisedCosine(i*bit_period)) for i in range(1, truncation))
 

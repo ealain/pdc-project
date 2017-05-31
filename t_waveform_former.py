@@ -3,7 +3,7 @@
 import numpy as np
 
 from config import WAVEFORM_TYPE
-from config import SAMPLING_FREQUENCY
+from config import SAMPLING_FREQUENCY, BIT_FREQUENCY
 
 from t_encoder import encode
 
@@ -18,7 +18,7 @@ def sin(t):
     Output: value of sine-pulse at time T
     '''
     # Delay between two bits
-    bit_period = 2.0/SAMPLING_FREQUENCY
+    bit_period = 1.0/BIT_FREQUENCY
     # Total amount of bits to transmit
     nb_bits = len(LIST_OF_BITS)
 
@@ -36,7 +36,7 @@ def step(t):
     Looks for bits produced by encoder and transmits them
     '''
     # Delay between two bits
-    bit_period = 2.0/SAMPLING_FREQUENCY
+    bit_period = 1.0/BIT_FREQUENCY
     # Total amount of bits to transmit
     nb_bits = len(LIST_OF_BITS)
 
@@ -51,7 +51,7 @@ def step(t):
 
 def rootRaisedCosine(t):
     beta = 0.5
-    bit_period = 1.0/SAMPLING_FREQUENCY*3.0/2.0
+    bit_period = 1.0/BIT_FREQUENCY
 
     if (t== bit_period/(4*beta)):
         return (beta/(np.pi*np.sqrt(2*bit_period)) * \
@@ -71,7 +71,7 @@ def rrc(t, beta = 0.5, truncation = 10):
     Output: value of root-raised-cosine at time T
     '''
     # Delay between two bits
-    bit_period = 1/SAMPLING_FREQUENCY * (1 + beta)
+    bit_period = 1/BIT_FREQUENCY
     # Total amount of bits to transmit
     nb_bits = len(LIST_OF_BITS)
     # To be returned (sum of contributions)
