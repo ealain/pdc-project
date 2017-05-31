@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from config import EXCHANGE_FILE_PATH
+from r_tuple_former import formTuples
+import matplotlib.pyplot as plt
 
 
 def ascii_to_char(l):
@@ -74,7 +76,7 @@ def decode():
                         elif calib_max:
                             if value > calib_max_value:
                                 calib_max_value = value
-                            elif value < value_prec * 97.0 / 100.0:
+                            elif value < value_prec * 80.0 / 100.0:
                                 measuring = True
                                 calib_max = False
                                 values.append(calibrate_value(calib_min_value, calib_max_value, value))
@@ -89,6 +91,13 @@ def decode():
     print calib_min_value
     print calib_max_value
     print values
+
+    tuples = formTuples(values)
+    print tuples
+    chars = sequence_to_char(tuples)
+    print chars
+    plt.plot(tuples)
+    plt.show()
 
     f.close()
 
