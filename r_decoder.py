@@ -39,6 +39,10 @@ def sequence_to_char(l):
     return ascii_to_char(bits)
 
 
+def calibrate_value(min_value, max_value, value):
+    return (value - min_value) / (max_value - min_value) * 2.0 - 1.0
+
+
 def decode():
     f = open(EXCHANGE_FILE_PATH)
     value_prec = -1
@@ -49,6 +53,10 @@ def decode():
     calib_max = False
     calib_min_value = float("inf")
     calib_max_value = 0.0
+
+    # Measure
+    values = []
+    measuring = False
 
     try:
         while True:
@@ -67,7 +75,11 @@ def decode():
                             if value > calib_max_value:
                                 calib_max_value = value
                             elif value < value_prec * 97.0 / 100.0:
-                                break
+                                measuring = True
+                                calib_max = False
+                                values.append(calibrate_value(calib_min_value, calib_max_value, value))
+                        elif measuring:
+                            values.append(calibrate_value(calib_min_value, calib_max_value, value))
                         elif value < value_prec * 90.0 / 100.0:
                             calib_min = True
                 value_prec = value
@@ -76,6 +88,7 @@ def decode():
 
     print calib_min_value
     print calib_max_value
+    print values
 
     f.close()
 
