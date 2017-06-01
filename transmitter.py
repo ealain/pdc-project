@@ -4,7 +4,7 @@
 import numpy as np
 import cv2
 
-from config import TRUNCATURE, BIT_PERIOD
+from config import TRUNCATION, BIT_FREQUENCY
 from time import time
 from t_waveform_former import f
 
@@ -35,7 +35,7 @@ def transmit(f):
     start_signal = time()
 
     while(True):
-        t = time() - start_signal - TRUNCATURE/BIT_PERIOD
+        t = time() - start_signal - TRUNCATION/BIT_FREQUENCY
         img = np.full((512, 512), (f(t)+1)/2.0)
 
         # Display the frame

@@ -2,7 +2,7 @@
 
 import numpy as np
 
-INPUT_FILE = 'alphabet.txt'
+INPUT_FILE = 'input.txt'
 EXCHANGE_FILE_PATH = './log'
 
 # Available choices are 'ascii'
@@ -10,7 +10,7 @@ CODING_METHOD = 'ascii'
 
 # Available choices are 'sinus', 'rectangle', 'rrc'
 WAVEFORM_TYPE = 'rrc'
-TRUNCATURE = 10
+TRUNCATION = 10
 BETA = 0.5
 
 BIT_FREQUENCY = 14.0
