@@ -2,6 +2,9 @@
 
 import numpy as np
 
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
+
 INPUT_FILE = 'input.txt'
 EXCHANGE_FILE_PATH = './log'
 

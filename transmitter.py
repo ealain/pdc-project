@@ -4,7 +4,7 @@
 import numpy as np
 import cv2
 
-from config import TRUNCATION, BIT_FREQUENCY
+from config import TRUNCATION, BIT_FREQUENCY, SCREEN_HEIGHT, SCREEN_WIDTH
 from time import time
 from t_waveform_former import f
 
@@ -19,7 +19,7 @@ def transmit(f):
     cv2.namedWindow('frame')
 
     while(time() < beginning + 5.0):
-        img = np.full((512, 512, 3), np.array([0, 255, 0]), dtype="uint8")
+        img = np.full((SCREEN_HEIGHT, SCREEN_WIDTH, 3), np.array([0, 255, 0]), dtype="uint8")
         cv2.imshow('frame', img)
         cv2.waitKey(1)
 
@@ -28,7 +28,7 @@ def transmit(f):
     time_mark = time()
     while(time() < time_mark + 2):
         value = (time() - time_mark)*0.5*255
-        img = np.full((512, 512, 3), np.array([value, value, value]), dtype="uint8")
+        img = np.full((SCREEN_HEIGHT, SCREEN_WIDTH, 3), np.array([value, value, value]), dtype="uint8")
         cv2.imshow('frame', img)
         cv2.waitKey(1)
 
@@ -36,7 +36,7 @@ def transmit(f):
 
     while(True):
         t = time() - start_signal - TRUNCATION/BIT_FREQUENCY
-        img = np.full((512, 512), (f(t)+1)/2.0)
+        img = np.full((SCREEN_HEIGHT, SCREEN_WIDTH), (f(t)+1)/2.0)
 
         # Display the frame
         cv2.imshow('frame', img)
