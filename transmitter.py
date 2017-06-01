@@ -22,23 +22,43 @@ def transmit(f):
         cv2.imshow('frame', img)
         cv2.waitKey(1)
 
-    # Low light flash for calibration
+
+    # ramp for calibration
     time_mark = time()
     while(time() < time_mark + 2):
-        img = np.full((512, 512, 3), np.array([0, 0, 0]), dtype="uint8")
+        value = (time() - time_mark)*0.5*255
+        img = np.full((512, 512, 3), np.array([value, value, value]), dtype="uint8")
         cv2.imshow('frame', img)
         cv2.waitKey(1)
 
-    # Full light flash for calibration
-    time_mark = time()
-    while(time() < time_mark + 2):
-        img = np.full((512, 512, 3), np.array([255, 255, 255]), dtype="uint8")
-        cv2.imshow('frame', img)
-        cv2.waitKey(1)
+    #
+    # # Low light flash for calibration
+    # time_mark = time()
+    # while(time() < time_mark + 2):
+    #     img = np.full((512, 512, 3), np.array([0, 0, 0]), dtype="uint8")
+    #     cv2.imshow('frame', img)
+    #     cv2.waitKey(1)
+    #
+    # # Full light flash for calibration
+    # time_mark = time()
+    # while(time() < time_mark + 2):
+    #     img = np.full((512, 512, 3), np.array([255, 255, 255]), dtype="uint8")
+    #     cv2.imshow('frame', img)
+    #     cv2.waitKey(1)
+    #
+    #
+    # # Gray signal to check for the middle value
+    # time_mark = time()
+    # while(time() < time_mark + 2):
+    #     img = np.full((512, 512, 3), np.array([126, 126, 126]), dtype="uint8")
+    #     cv2.imshow('frame', img)
+    #     cv2.waitKey(1)
+    #
 
     start_signal = time()
+
     while(True):
-        t = time() - start_signal
+        t = time() - start_signal - 3.5
         img = np.full((512, 512), (f(t)+1)/2.0)
 
         # Display the frame
@@ -49,5 +69,6 @@ def transmit(f):
             break
 
     cv2.destroyAllWindows()
+
 
 transmit(f)
