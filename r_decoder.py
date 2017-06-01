@@ -44,17 +44,30 @@ def sequence_to_char(l):
 def calibrate_value(min_value, max_value, value):
     return (value - min_value) / (max_value - min_value) * 2.0 - 1.0
 
+def calibrate_ramp(ramp, value):
+    for (i, x) in enumerate(ramp):
+        if x == value or (x > value and i == 0):
+            return float(i) / len(ramp)
+        elif x > value:
+            xprec = ramp[i-1]
+            a = x - xprec
+            b = x - a * float(i)
+            return (value - b) / a / len(ramp)
+    return float(len(ramp)-1) / len(ramp)
+
 
 def decode():
     f = open(EXCHANGE_FILE_PATH)
     value_prec = -1
 
     # Calibration
-    calib = True
-    calib_min = False
-    calib_max = False
-    calib_min_value = float("inf")
-    calib_max_value = 0.0
+    calib = False
+    green = True
+    # calib_min = False
+    # calib_max = False
+    # calib_min_value = float("inf")
+    # calib_max_value = 0.0
+    ramp = []
 
     # Measure
     values = []
@@ -65,38 +78,54 @@ def decode():
             line = f.readline()
             if len(line) > 0:
                 value = float(line.strip())
-                if calib:
+                if green:
                     if value_prec != -1:
-                        if calib_min:
-                            if value < calib_min_value:
-                                calib_min_value = value
-                            elif value > value_prec * 110.0 / 100.0:
-                                calib_min = False
-                                calib_max = True
-                        elif calib_max:
-                            if value > calib_max_value:
-                                calib_max_value = value
-                            elif value < value_prec * 80.0 / 100.0:
-                                measuring = True
-                                calib_max = False
-                                values.append(calibrate_value(calib_min_value, calib_max_value, value))
-                        elif measuring:
-                            values.append(calibrate_value(calib_min_value, calib_max_value, value))
-                        elif value < value_prec * 90.0 / 100.0:
-                            calib_min = True
+                        if value < value_prec * 90.0 / 100.0:
+                            green = False
+                            calib = True
+                            ramp.append(value)
+                elif calib:
+                    if value < value_prec * 90.0 / 100.0:
+                        calib = False
+                    else:
+                        ramp.append(value)
+                else:
+                    values.append(calibrate_value(0.0, 1.0, calibrate_ramp(ramp, value)))
+                    # if value_prec != -1:
+                    #     if calib_min:
+                    #         if value < calib_min_value:
+                    #             calib_min_value = value
+                    #         elif value > value_prec * 110.0 / 100.0:
+                    #             calib_min = False
+                    #             calib_max = True
+                    #     elif calib_max:
+                    #         if value > calib_max_value:
+                    #             calib_max_value = value
+                    #         elif value < value_prec * 90.0 / 100.0:
+                    #             measuring = True
+                    #             calib_max = False
+                    #             values.append(calibrate_value(calib_min_value, calib_max_value, value))
+                    #     elif measuring:
+                    #         values.append(calibrate_value(calib_min_value, calib_max_value, value))
+                    #     elif value < value_prec * 90.0 / 100.0:
+                    #         calib_min = True
                 value_prec = value
     except KeyboardInterrupt:
         pass
 
-    print calib_min_value
-    print calib_max_value
+    # print calib_min_value
+    # print calib_max_value
+    print(min(ramp))
+    print(max(ramp))
+    print(ramp)
     print values
+    print len(values)
 
+    plt.plot(values)
     tuples = formTuples(values)
     print tuples
     chars = sequence_to_char(tuples)
     print chars
-    plt.plot(tuples)
     plt.show()
 
     f.close()
