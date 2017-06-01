@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from config import EXCHANGE_FILE_PATH
-from r_tuple_former import formTuples
+from r_tuple_former import formTuples, correlation_function
 import matplotlib.pyplot as plt
 
 
@@ -63,10 +63,6 @@ def decode():
     # Calibration
     calib = False
     green = True
-    # calib_min = False
-    # calib_max = False
-    # calib_min_value = float("inf")
-    # calib_max_value = 0.0
     ramp = []
 
     # Measure
@@ -80,10 +76,10 @@ def decode():
                 value = float(line.strip())
                 if green:
                     if value_prec != -1:
-                        if value < value_prec * 90.0 / 100.0:
+                        if value < value_prec * 80.0 / 100.0:
                             green = False
                             calib = True
-                            ramp.append(value)
+                            value = 0.0
                 elif calib:
                     if value < value_prec * 90.0 / 100.0:
                         calib = False
@@ -91,30 +87,10 @@ def decode():
                         ramp.append(value)
                 else:
                     values.append(calibrate_value(0.0, 1.0, calibrate_ramp(ramp, value)))
-                    # if value_prec != -1:
-                    #     if calib_min:
-                    #         if value < calib_min_value:
-                    #             calib_min_value = value
-                    #         elif value > value_prec * 110.0 / 100.0:
-                    #             calib_min = False
-                    #             calib_max = True
-                    #     elif calib_max:
-                    #         if value > calib_max_value:
-                    #             calib_max_value = value
-                    #         elif value < value_prec * 90.0 / 100.0:
-                    #             measuring = True
-                    #             calib_max = False
-                    #             values.append(calibrate_value(calib_min_value, calib_max_value, value))
-                    #     elif measuring:
-                    #         values.append(calibrate_value(calib_min_value, calib_max_value, value))
-                    #     elif value < value_prec * 90.0 / 100.0:
-                    #         calib_min = True
                 value_prec = value
     except KeyboardInterrupt:
         pass
 
-    # print calib_min_value
-    # print calib_max_value
     print(min(ramp))
     print(max(ramp))
     print(ramp)
