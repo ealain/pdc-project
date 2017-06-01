@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from config import EXCHANGE_FILE_PATH
-from r_tuple_former import formTuples, correlation_function
+from r_tuple_former import formTuples
 import matplotlib.pyplot as plt
+import sys
 
 
 def ascii_to_char(l):
@@ -56,7 +57,7 @@ def calibrate_ramp(ramp, value):
     return float(len(ramp)-1) / len(ramp)
 
 
-def decode():
+def decode(debug=False):
     f = open(EXCHANGE_FILE_PATH)
     value_prec = -1
 
@@ -69,43 +70,50 @@ def decode():
     values = []
     measuring = False
 
-    try:
-        while True:
-            line = f.readline()
-            if len(line) > 0:
-                value = float(line.strip())
-                if green:
-                    if value_prec != -1:
-                        if value < value_prec * 80.0 / 100.0:
-                            green = False
-                            calib = True
-                            value = 0.0
-                elif calib:
-                    if value < value_prec * 90.0 / 100.0:
-                        calib = False
-                    else:
-                        ramp.append(value)
-                else:
-                    values.append(calibrate_value(0.0, 1.0, calibrate_ramp(ramp, value)))
-                value_prec = value
-    except KeyboardInterrupt:
-        pass
+    line = f.readline()
+    while len(line) > 0:
+        value = float(line.strip())
+        if green:
+            if value_prec != -1:
+                if value < value_prec * 80.0 / 100.0:
+                    green = False
+                    calib = True
+                    value = 0.0
+        elif calib:
+            if value < value_prec * 90.0 / 100.0:
+                calib = False
+            else:
+                ramp.append(value)
+        else:
+            values.append(calibrate_value(0.0, 1.0, calibrate_ramp(ramp, value)))
+        value_prec = value
+        line = f.readline()
 
-    print(min(ramp))
-    print(max(ramp))
-    print(ramp)
-    print values
-    print len(values)
+    f.close()
 
-    plt.plot(values)
     tuples = formTuples(values)
-    print tuples
     chars = sequence_to_char(tuples)
-    print chars
-    plt.show()
 
+    if debug:
+        print(min(ramp))
+        print(max(ramp))
+        print(ramp)
+        print values
+        print len(values)
+
+        plt.plot(values)
+        print(tuples)
+        plt.show()
+
+    print(chars)
+
+    f = open("result.txt", "w")
+    f.write("".join(chars))
     f.close()
 
 
 if __name__ == "__main__":
-    decode()
+    debug = False
+    if len(sys.argv) > 1 and sys.argv[1] == "debug":
+        debug = True
+    decode(debug)

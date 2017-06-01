@@ -8,6 +8,7 @@ from sys import stdin
 
 from config import SAMPLING_FREQUENCY, EXCHANGE_FILE_PATH
 from r_screen_detect import screen_position
+from r_decoder import decode
 
 def receive():
     '''
@@ -36,6 +37,8 @@ def receive():
         pass
     f.write('\n'.join(values))
     f.close()
+
+    decode()
 
 
 if __name__ == "__main__":
