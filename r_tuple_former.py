@@ -68,3 +68,28 @@ def low_pass_filter(x, order, cutOffFrequency, samplingFrequency):
     y = signal.filtfilt(b, a, x)
     return y
 
+
+def correlation_function(signal):
+    '''
+
+    :param signal: received signal (frequecy SAMPLING_FREQUENCY)
+    :return: correlation function between signal and root raised cosine sampled at 10*SAMPLING_FREQUENCY
+    '''
+    beta = 0.5
+    truncation = 10
+    bit_period = 1.0 / BIT_FREQUENCY
+    t = np.arange(-truncation * bit_period, truncation * bit_period, 1.0 / (SAMPLING_FREQUENCY*10))
+    m = 4 * beta / np.pi / np.sqrt(bit_period) + (1 - beta) / np.sqrt(bit_period) + sum(abs(2 * rootRaisedCosine(i * bit_period)) for i in range(1, truncation))
+
+    filter = [rootRaisedCosine(x) for x in t]
+
+    corrFunction = []
+
+    for i in range(len(signal) - int(len(filter)/10.0)):
+        for j in range(10):
+            s = 0
+            for k in range(int(len(filter)/10.0)):
+                s += signal[i + k] * m * filter[(k+1)*10 - (j+1)]
+            corrFunction.append(s / SAMPLING_FREQUENCY)
+    return corrFunction
+
