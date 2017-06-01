@@ -29,10 +29,8 @@ def receive():
             last_read = time()
             ret, frame = cap.read()
             sub_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)[y:y+h, x:x+w]
-            # if(last_read - last_written >= sampling_period):
-            if True:
+            if(last_read - last_written >= sampling_period):
                 last_written = time()
-                # f.write(str(np.mean(sub_frame))+'\n')
                 values.append(str(np.mean(sub_frame)))
     except KeyboardInterrupt:
         pass

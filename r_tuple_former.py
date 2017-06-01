@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-from config import SAMPLING_FREQUENCY, BIT_FREQUENCY
+from config import SAMPLING_FREQUENCY, BIT_FREQUENCY, TRUNCATION, BETA
 from scipy import signal
 
 def resample(signal):
@@ -17,17 +17,16 @@ def resample(signal):
 
 
 def rootRaisedCosine(t):
-    beta = 0.5
-    bit_period = 1.0/BIT_FREQUENCY
+    bit_period = 1/BIT_FREQUENCY
 
-    if (t== bit_period/(4*beta)):
-        return (beta/(np.pi*np.sqrt(2*bit_period)) * \
-                ((np.pi + 2)*np.sin(np.pi/(4*beta)) + (np.pi - 2)*np.cos(np.pi/(4*beta))))
+    if (t== bit_period/(4*BETA)):
+        return (BETA/(np.pi*np.sqrt(2*bit_period)) * \
+                ((np.pi + 2)*np.sin(np.pi/(4*BETA)) + (np.pi - 2)*np.cos(np.pi/(4*BETA))))
     else:
-        return (4 * beta / np.pi / np.sqrt(bit_period) * \
-            (np.cos((1 + beta) * np.pi * t / bit_period) + \
-             (1 - beta) * np.pi / (4 * beta) * np.sinc((1-beta)*t/bit_period)) / \
-                (1 - (4*beta*t/bit_period)**2))
+        return (4 * BETA / np.pi / np.sqrt(bit_period) * \
+            (np.cos((1 + BETA) * np.pi * t / bit_period) + \
+             (1 - BETA) * np.pi / (4 * BETA) * np.sinc((1-BETA)*t/bit_period)) / \
+                (1 - (4*BETA*t/bit_period)**2))
 
 
 def formTuples(signal):
@@ -39,11 +38,9 @@ def formTuples(signal):
     # signal must be sampled at 2*Fe
     signal = resample(signal)
 
-    beta = 0.5
-    truncation = 10
-    bit_period = 1.0/BIT_FREQUENCY
-    t = np.arange(-truncation*bit_period, truncation*bit_period, 0.5/SAMPLING_FREQUENCY)
-    m = 4*beta/np.pi/np.sqrt(bit_period) + (1-beta)/np.sqrt(bit_period) + sum(abs(2*rootRaisedCosine(i*bit_period)) for i in range(1, truncation))
+    bit_period = 1/BIT_FREQUENCY
+    t = np.arange(-TRUNCATION*bit_period, TRUNCATION*bit_period, 0.5/SAMPLING_FREQUENCY)
+    m = 4*BETA/np.pi/np.sqrt(bit_period) + (1-BETA)/np.sqrt(bit_period) + sum(abs(2*rootRaisedCosine(i*bit_period)) for i in range(1, TRUNCATION))
 
     # the filter must be sampled at 2*Fe
     filter = [rootRaisedCosine(x) for x in t]
@@ -75,11 +72,9 @@ def correlation_function(signal):
     :param signal: received signal (frequecy SAMPLING_FREQUENCY)
     :return: correlation function between signal and root raised cosine sampled at 10*SAMPLING_FREQUENCY
     '''
-    beta = 0.5
-    truncation = 10
-    bit_period = 1.0 / BIT_FREQUENCY
-    t = np.arange(-truncation * bit_period, truncation * bit_period, 1.0 / (SAMPLING_FREQUENCY*10))
-    m = 4 * beta / np.pi / np.sqrt(bit_period) + (1 - beta) / np.sqrt(bit_period) + sum(abs(2 * rootRaisedCosine(i * bit_period)) for i in range(1, truncation))
+    bit_period = 1 / BIT_FREQUENCY
+    t = np.arange(-TRUNCATION * bit_period, TRUNCATION * bit_period, 1.0 / (SAMPLING_FREQUENCY*10))
+    m = 4 * BETA / np.pi / np.sqrt(bit_period) + (1 - BETA) / np.sqrt(bit_period) + sum(abs(2 * rootRaisedCosine(i * bit_period)) for i in range(1, TRUNCATION))
 
     filter = [rootRaisedCosine(x) for x in t]
 
