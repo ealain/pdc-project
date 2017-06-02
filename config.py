@@ -16,7 +16,9 @@ WAVEFORM_TYPE = 'rrc'
 TRUNCATION = 10
 BETA = 0.5
 
-BIT_FREQUENCY = 10.0
+TRANSMITTER_COLOR = [50, 125, 46]
+
+BIT_FREQUENCY = 12.0
 SAMPLING_FREQUENCY = 30.0
 
 # Lower and upper bounds of color detection for screen detection
@@ -25,7 +27,7 @@ SAMPLING_FREQUENCY = 30.0
 SCREEN_DETECTION_LOWER = np.array([0, 120, 0], dtype="uint8")
 SCREEN_DETECTION_UPPER = np.array([120, 255, 120], dtype="uint8")
 
-ALLOWED_DETECTION_TIME = 1.0  # (Seconds)
+ALLOWED_DETECTION_TIME = 2.0  # (Seconds)
 # Approx. 90 15' screens 3m away
 VALID_MIN_AREA = 0.0
 VALID_MAX_AREA = SCREEN_WIDTH * SCREEN_HEIGHT / 60.0
