@@ -23,14 +23,11 @@ def receive():
         print("Unable to detect screen")
         return
     cap = cv2.VideoCapture(0)
-    last_written = -1.0
     values = []
     try:
         while(True):
-            last_read = time()
             ret, frame = cap.read()
             sub_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)[y:y+h, x:x+w]
-            last_written = time()
             values.append(str(np.mean(sub_frame)))
     except KeyboardInterrupt:
         pass
