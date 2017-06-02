@@ -4,7 +4,7 @@
 import numpy as np
 import cv2
 
-from config import SCREEN_DETECTION_LOWER, SCREEN_DETECTION_UPPER
+from config import SCREEN_DETECTION_LOWER, SCREEN_DETECTION_UPPER, VALID_MIN_AREA, VALID_MAX_AREA, ALLOWED_DETECTION_TIME, VALID_AREA_RATIO
 
 
 def detect_color(frame):
@@ -20,7 +20,7 @@ def screen_position():
         - contour's area is more than 70% of the area of the bounding rectangle
     '''
     cap = cv2.VideoCapture(0)
-    nb_max_iterations = 10
+    nb_max_iterations = int(30*ALLOWED_DETECTION_TIME)
     for it in range(nb_max_iterations):
         ret, frame = cap.read()
         mask = detect_color(frame)
@@ -29,16 +29,13 @@ def screen_position():
         contours, hierarchy = cv2.findContours(imgray,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
         contours = sorted(contours, key=lambda x:len(x), reverse=True)
         i = 0
-        max_area = 480*640
-        # Approx. 90 15' screens 3m away
-        valid_min_area = max_area/120.0/4.0
-        valid_max_area = max_area/60.0
         while(i < len(contours)):
             x,y,w,h = cv2.boundingRect(contours[i])
             rect_cnt = np.array([[[x, y]], [[x+w, y]], [[x+w, y+h]], [[x, y+h]]], dtype=np.int32)
             rect_cnt_area = cv2.contourArea(rect_cnt)
-            valid_area_ratio = 0.5
-            if(cv2.contourArea(contours[i]) > 0.7 * rect_cnt_area and rect_cnt_area > valid_min_area):
+            if(cv2.contourArea(contours[i]) > VALID_AREA_RATIO * rect_cnt_area and \
+                    rect_cnt_area > VALID_MIN_AREA and \
+                    rect_cnt_area < VALID_MAX_AREA):
                 cap.release()
                 return x,y,w,h
             else:
@@ -62,16 +59,13 @@ def main():
         contours, hierarchy = cv2.findContours(imgray,cv2.RETR_TREE,cv2.CHAIN_APPROX_NONE)
         contours = sorted(contours, key=lambda x:len(x), reverse=True)
         i = 0
-        max_area = 480*640
-        # Approx. 90 15' screens 3m away
-        valid_min_area = max_area/120.0/4.0
-        valid_max_area = max_area/60.0
         while(i < len(contours)):
             x,y,w,h = cv2.boundingRect(contours[i])
             rect_cnt = np.array([[[x, y]], [[x+w, y]], [[x+w, y+h]], [[x, y+h]]], dtype=np.int32)
             rect_cnt_area = cv2.contourArea(rect_cnt)
-            valid_area_ratio = 0.5
-            if(cv2.contourArea(contours[i]) > 0.7 * rect_cnt_area and rect_cnt_area > valid_min_area):
+            if(cv2.contourArea(contours[i]) > VALID_AREA_RATIO * rect_cnt_area and \
+                    rect_cnt_area > VALID_MIN_AREA and \
+                    rect_cnt_area < VALID_MAX_AREA):
                 cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
                 break
             else:
