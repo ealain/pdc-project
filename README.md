@@ -14,6 +14,12 @@ To start the transmitter, run:
 ./transmitter.py
 ~~~
 
+To start the receiver, run:
+
+~~~
+./receiver.py
+~~~
+
 ## Naming conventions
 
 * Files for the receiver begin with `r_`
